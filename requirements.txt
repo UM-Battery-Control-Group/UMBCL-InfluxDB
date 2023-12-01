@@ -1,0 +1,9 @@
+certifi==2023.11.17
+dotenv==0.0.5
+influxdb-client==1.38.0
+python-dateutil==2.8.2
+python-dotenv==1.0.0
+reactivex==4.0.4
+six==1.16.0
+typing_extensions==4.8.0
+urllib3==2.1.0

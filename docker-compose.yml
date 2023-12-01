@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  influxdb:
+    image: influxdb:2.0
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      # - /Volumes/me-battery-controls-lab/influx_data:/var/lib/influxdb2
+      - /Users/yiliu/Documents/GitHub/UMBCL_InfluxDB/data:/var/lib/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=UMBCL_password
+      - DOCKER_INFLUXDB_INIT_ORG=UMBCL
+      - DOCKER_INFLUXDB_INIT_BUCKET=UMBCL_BUCKET
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
