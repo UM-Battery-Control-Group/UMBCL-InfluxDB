@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 from src.utils import setup_logger
 from dotenv import load_dotenv
 from influxdb_client import InfluxDBClient, WriteApi
@@ -90,14 +91,16 @@ class DataManager:
 
         Returns
         -------
-        json_result : str
-            The json string of the query result
+        dfs: dict
+            The dictionary of dataframes, where the key is the measurement name and the value is the dataframe
         """
         with InfluxDBClient(url=self.url, token=self.token, org=self.org) as client:
             self.logger.info(f"Start querying data from InfluxDB database")
             query_api = client.query_api()
-            tables = query_api.query(query=query)
-            json_result = tables.to_json(indent=4)
+            result = query_api.query_data_frame(query=query)
             self.logger.info(f"Finish querying data from InfluxDB database")
-            return json_result
+            dfs = {}
+            for measurement, df in result.groupby('_measurement'):
+                dfs[measurement] = df.sort_values(by='_time')
+            return dfs
 
