@@ -18,28 +18,40 @@ class DataManager:
         self.logger = setup_logger()
         self.data_parser = DataParser()
 
-    def write_neware_vdf_data(self, file_path):
+    def write_data(self, file_path: str, data_type: str):
         """
-        Write the data from the Neware VDF file into the InfluxDB database
+        Write the data from the Arbin file into the InfluxDB database
 
         Parameters
         ----------
         file_path : str
-            The path to the Neware VDF file
+            The path to the Arbin file
+        data_type : str
+            The data type, i.e. "neware_vdf", "arbin", etc.
         """
-        # Parse the data from the Neware VDF file
-        points = self.data_parser.parse_neware_vdf(file_path)
-        if points is None:
+
+        # Parse the data from the Arbin file
+        if data_type.lower() == "neware_vdf":
+            df = self.data_parser.parse_neware_vdf(file_path)
+        elif data_type.lower() == "arbin":
+            df = self.data_parser.parse_arbin(file_path)
+
+        measurement_name = file_path.split("/")[-1].split(".")[0]   # Use the file name as the measurement name
+        if df is None:
             return
+        
         # Write the data into the database
         with InfluxDBClient(url=self.url, token=self.token, org=self.org) as client:
-            self.logger.info(f"Start writing Neware VDF file {file_path} into InfluxDB database")
+            self.logger.info(f"Start writing Arbin file {file_path} into InfluxDB database")
             write_api = client.write_api(write_options=SYNCHRONOUS)
+
             # Write the data into the database
-            for point in points:
-                self.logger.info(f"Writing point {point}")
-                write_api.write(bucket=self.bucket, record=point)
-            self.logger.info(f"Finish writing Neware VDF file {file_path} into InfluxDB database")
+            write_api.write(bucket=self.bucket, record=df, 
+                            data_frame_measurement_name=measurement_name,
+                            # data_frame_tag_columns=,
+                            data_frame_timestamp_column="_time")
+            
+            self.logger.info(f"Finish writing Arbin file {file_path} into InfluxDB database")
 
     def query_data(self, measurement=None, tags=None, start_time="-100y", end_time="now()"):
         """
