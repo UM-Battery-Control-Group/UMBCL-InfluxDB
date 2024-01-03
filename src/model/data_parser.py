@@ -53,7 +53,15 @@ class DataParser:
             vdf_meta.update(neware_vdf_meta)
 
             # Read the DataFrame
-            neware_vdf_df = pd.read_csv(file_path, delimiter='\t', skiprows=start_line)
+            df = pd.read_csv(file_path, delimiter='\t', skiprows=start_line, nrows=1)
+            header = df.columns
+            units = df.iloc[0]
+            new_header = [f'{h} ({u})' for h, u in zip(header, units)]
+
+            neware_vdf_df = pd.read_csv(file_path, delimiter='\t', skiprows=start_line + 2, header=None, names=new_header)
+
+            # Read the DataFrame again with the new header
+            neware_vdf_df = pd.read_csv(file_path, delimiter='\t', skiprows=start_line + 2, header=None, names=new_header)
 
             self._add_meta_data(neware_vdf_df, vdf_meta)
             self._rename_columns(neware_vdf_df, "neware_vdf")
@@ -219,10 +227,7 @@ class DataParser:
             return None
         
         try:
-            print(df.columns)
-            print(rename_dict)
             df.rename(columns=rename_dict, inplace=True)
-            print(df.columns)
             return df
 
         except Exception as e:

@@ -10,8 +10,8 @@ ARBIN_FIELD_NAMES = ["cycle_index", "step_index", "", "step_time", "test_time", 
                      "charge_energy", "discharge_energy", "", "", "", "", "internal_resistance", "", ""]
 
 
-NEWARE_VDF_FIELD_NAMES = ["", "", "", "Test Time", "", "Timestamp", "Current", "Potential",
-                          "", "", "", "", "", "", "", "", "", "", "", "", "Ambient Temperature"]
+NEWARE_VDF_FIELD_NAMES = ["", "", "", "Test Time (second)", "", "Timestamp (epoch)", "Current (amp)", "Potential (volt)",
+                          "", "", "", "", "", "", "", "", "", "", "", "", "Ambient Temperature (celsius)"]
 
 NEWARE_FIELD_NAMES = ["Cycle Index", "Step Index", "Step Type", "Time", "Total Time", "", "Current(A)", "Voltage(V)",
                       "Capacity(Ah)", "Chg. Cap.(Ah)", "DChg. Cap.(Ah)", "Energy(Wh)", "Chg. Energy(Wh)",
