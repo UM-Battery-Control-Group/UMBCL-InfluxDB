@@ -1,4 +1,7 @@
 import sys,os
+import pandas as pd
+import matplotlib.pyplot as plt
+
 sys.path.append(os.path.dirname(os.path.abspath("__file__")))
 if os.name=="nt":
     sys.path.append(os.path.dirname(os.path.abspath("__file__"))+"\\src")
@@ -11,13 +14,22 @@ def test_write_neware_vdf_data():
     data_manager = DataManager()
     # file_path = "/Users/yiliu/Documents/GitHub/UMBCL_InfluxDB/GMJuly2022_CELL004_EIS_3d_P25C_25P0PSI_20230324_R0_CH032.csv"
     # data_manager.write_neware_vdf_data(file_path)
-    arbin_file_path = "/home/me-bcl/Lab_Share_Volt/PROJ_GMJULY2022/Cycler_Data_By_Cell/GMJuly2022_CELL901/GMJuly2022_CELL901REF_setRef_1_P25C_P5P0PSI_20230713_R0.res"
-    arbin_data = data_manager.data_parser.parse_arbin(arbin_file_path)
-    print(arbin_data.columns)
+    # arbin_file_path = "/home/me-bcl/Lab_Share_Volt/PROJ_GMJULY2022/Cycler_Data_By_Cell/GMJuly2022_CELL901/GMJuly2022_CELL901REF_setRef_1_P25C_P5P0PSI_20230713_R0.res"
+    # arbin_data = data_manager.data_parser.parse_arbin(arbin_file_path)
+    # print(arbin_data.head())
     
     neware_vdf_file_path = "/home/me-bcl/Lab_Share_Volt/PROJ_GMJULY2022/Cycler_Data_By_Cell/GMJuly2022_CELL002/GMJuly2022_CELL002_Test3_1_P0C_5P0PSI_20230505_R0_CH041.csv"
     neware_vdf_data = data_manager.data_parser.parse_neware_vdf(neware_vdf_file_path)
-    print(neware_vdf_data.columns)
+    print(neware_vdf_data.head())
+
+    # biologic_file_path = "/home/me-bcl/Lab_Share_Volt/Raw Cycler Data/Biologic/GMJuy2022/GMJuly2022_CELL102_EIS_3d_P25C_5P0PSI_20230717_R0_CA8.mpr"
+    # biologic_data = data_manager.data_parser.parse_biologic(biologic_file_path)
+    # print(biologic_data.columns)
+
+    # neware_file_path = '/home/me-bcl/Lab_Share_Volt/PROJ_GMJULY2022/Cycler_Data_By_Cell/GMJuly2022_CELL002/GMJuly2022_CELL002_RPT_3_P0C_5P0PSI_20230110_R0_CH041_20230110143333_37_2_1_2818580185.xlsx'
+    # neware_data = data_manager.data_parser.parse_neware(neware_file_path)
+    # print(neware_data.columns)
+    
 
 if __name__ == "__main__":
     test_write_neware_vdf_data()
