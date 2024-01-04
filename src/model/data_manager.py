@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import datetime
 from src.utils import setup_logger
 from dotenv import load_dotenv
 from influxdb_client import InfluxDBClient, WriteApi
@@ -35,6 +36,12 @@ class DataManager:
             df = self.data_parser.parse_neware_vdf(file_path)
         elif data_type.lower() == "arbin":
             df = self.data_parser.parse_arbin(file_path)
+        elif data_type.lower() == "biologic":
+            df = self.data_parser.parse_biologic(file_path)
+        elif data_type.lower() == "neware":
+            df = self.data_parser.parse_neware(file_path)
+        else:
+            raise ValueError(f"Data type {data_type} is not supported")
 
         measurement_name = file_path.split("/")[-1].split(".")[0]   # Use the file name as the measurement name
         if df is None:
@@ -42,16 +49,16 @@ class DataManager:
         
         # Write the data into the database
         with InfluxDBClient(url=self.url, token=self.token, org=self.org) as client:
-            self.logger.info(f"Start writing Arbin file {file_path} into InfluxDB database")
+            self.logger.info(f"Start writing file {file_path} into InfluxDB database")
             write_api = client.write_api(write_options=SYNCHRONOUS)
 
             # Write the data into the database
             write_api.write(bucket=self.bucket, record=df, 
                             data_frame_measurement_name=measurement_name,
                             # data_frame_tag_columns=,
-                            data_frame_timestamp_column="_time")
+                            data_frame_timestamp_column="Timestamp(epoch)")
             
-            self.logger.info(f"Finish writing Arbin file {file_path} into InfluxDB database")
+            self.logger.info(f"Finish writing file {file_path} into InfluxDB database")
 
     def query_data(self, measurement=None, tags=None, start_time="-100y", end_time="now()"):
         """
@@ -115,4 +122,3 @@ class DataManager:
             for measurement, df in result.groupby('_measurement'):
                 dfs[measurement] = df.sort_values(by='_time')
             return dfs
-

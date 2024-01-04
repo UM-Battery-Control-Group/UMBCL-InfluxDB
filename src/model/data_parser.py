@@ -65,6 +65,7 @@ class DataParser:
 
             self._add_meta_data(neware_vdf_df, vdf_meta)
             self._rename_columns(neware_vdf_df, "neware_vdf")
+            neware_vdf_df["Timestamp(epoch)"] = neware_vdf_df["Timestamp(epoch)"].apply(self._timestamp_to_datetime)
 
             return neware_vdf_df
 
