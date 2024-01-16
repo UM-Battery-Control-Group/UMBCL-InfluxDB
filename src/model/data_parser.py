@@ -163,7 +163,12 @@ class DataParser:
             neware_df = self._read_xlsx(file_path)
             if neware_df is None:
                 return None
-            
+
+            # Add the timestamp for the neware data
+            neware_df['Date'] = pd.to_datetime(neware_df['Date'])
+            total_time = pd.to_timedelta(neware_df['Total Time'])
+            neware_df['Timestamp(epoch)'] = neware_df['Date'][0] + total_time
+
             measurement_name = file_path.split("/")[-1].split(".")[0]   # Use the file name as the measurement name
             neware_meta = self._measurement_name_to_metadata(measurement_name, "neware")
             if neware_meta is None:

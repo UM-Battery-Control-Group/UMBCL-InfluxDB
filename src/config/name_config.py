@@ -30,7 +30,12 @@ NEWARE_NAME_KEYS = [
     "Pressure",
     "TestDate",
     "RunNumber",
-    "ChannelNumber"
+    "ChannelNumber",
+    "StartTime",
+    "DeviceID",
+    "UnitID",
+    "CHID",
+    "TestID"
 ]
 
 NEWARE_VDF_NAME_KEYS = [
