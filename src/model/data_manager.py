@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from influxdb_client import InfluxDBClient, WriteApi
 from influxdb_client.client.write_api import SYNCHRONOUS
 from src.model import DataParser
+from src.config import name_config as tag_keys
 
 load_dotenv('influx.env')
 
@@ -34,12 +35,16 @@ class DataManager:
         # Parse the data from the Arbin file
         if data_type.lower() == "neware_vdf":
             df = self.data_parser.parse_neware_vdf(file_path)
+            tags = tag_keys.NEWARE_NAME_KEYS
         elif data_type.lower() == "arbin":
             df = self.data_parser.parse_arbin(file_path)
+            tags = tag_keys.ARBIN_NAME_KEYS
         elif data_type.lower() == "biologic":
             df = self.data_parser.parse_biologic(file_path)
+            tags = tag_keys.BIOLOGIC_NAME_KEYS
         elif data_type.lower() == "neware":
             df = self.data_parser.parse_neware(file_path)
+            tags = tag_keys.NEWARE_NAME_KEYS
         else:
             raise ValueError(f"Data type {data_type} is not supported")
 
@@ -55,7 +60,7 @@ class DataManager:
             # Write the data into the database
             write_api.write(bucket=self.bucket, record=df, 
                             data_frame_measurement_name=measurement_name,
-                            # data_frame_tag_columns=,
+                            data_frame_tag_columns=tags,
                             data_frame_timestamp_column="Timestamp(epoch)")
             
             self.logger.info(f"Finish writing file {file_path} into InfluxDB database")
