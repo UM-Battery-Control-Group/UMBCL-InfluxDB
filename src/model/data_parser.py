@@ -89,7 +89,7 @@ class DataParser:
         """
         try:
             self.logger.info(f"Start parsing Biologic file {file_path}")
-            df = self._read_mpr(file_path)
+            df, start_time = self._read_mpr(file_path)
             if df is None:
                 return None
             
@@ -100,7 +100,10 @@ class DataParser:
             
             self._add_meta_data(df, biologic_meta)
             self._rename_columns(df, "biologic")
-
+            # Add the timestamp column
+            total_time = pd.to_timedelta(df['Total Time'])
+            df["Timestamp(epoch)"] = start_time + total_time
+            
             return df
         
         except Exception as e:
@@ -320,14 +323,18 @@ class DataParser:
         -------
         df : pandas.DataFrame
             The dataframe
+        start_timestamp : datetime.datetime
+            The start timestamp
         """
         try:
             # Read the mpr file
             mpr_file = BioLogic.MPRfile(file_path)
+            # Get the start time
+            start_time = mpr_file.timestamp
             df = pd.DataFrame(mpr_file.data)
             self.logger.info(f"Loaded mpr file from {file_path} successfully")
 
-            return df
+            return df, start_time
         
         except Exception as e:
             self.logger.error(f"Failed to load mpr file from {file_path}: {e}")
