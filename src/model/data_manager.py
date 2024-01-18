@@ -83,8 +83,8 @@ class DataManager:
 
         Returns
         -------
-        json_result : str
-            The json string of the query result
+        dfs: dict
+            The dictionary of dataframes, where the key is the measurement name and the value is the dataframe
         """
         measurement_filter = f'r["_measurement"] == "{measurement}"' if measurement else ''
         tag_filters = [f'r["{key}"] == "{value}"' for key, value in tags.items()] if tags else []
@@ -124,6 +124,12 @@ class DataManager:
             result = query_api.query_data_frame(query=query)
             self.logger.info(f"Finish querying data from InfluxDB database")
             dfs = {}
-            for measurement, df in result.groupby('_measurement'):
-                dfs[measurement] = df.sort_values(by='_time')
+            if isinstance(result, list):
+                for df in result:
+                    if '_measurement' in df:
+                        measurement = df['_measurement'].iloc[0]
+                        dfs[measurement] = df.sort_values(by='_time')
+            elif '_measurement' in result:
+                measurement = result['_measurement'].iloc[0]
+                dfs[measurement] = result.sort_values(by='_time')
             return dfs
