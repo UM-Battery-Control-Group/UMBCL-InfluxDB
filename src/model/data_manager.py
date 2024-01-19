@@ -1,9 +1,12 @@
 import os
+import pandas as pd
+import datetime
 from src.utils import setup_logger
 from dotenv import load_dotenv
 from influxdb_client import InfluxDBClient, WriteApi
 from influxdb_client.client.write_api import SYNCHRONOUS
 from src.model import DataParser
+from src.config import name_config as tag_keys
 
 load_dotenv('influx.env')
 
@@ -17,28 +20,50 @@ class DataManager:
         self.logger = setup_logger()
         self.data_parser = DataParser()
 
-    def write_neware_vdf_data(self, file_path):
+    def write_data(self, file_path: str, data_type: str):
         """
-        Write the data from the Neware VDF file into the InfluxDB database
+        Write the data from the Arbin file into the InfluxDB database
 
         Parameters
         ----------
         file_path : str
-            The path to the Neware VDF file
+            The path to the Arbin file
+        data_type : str
+            The data type, i.e. "neware_vdf", "arbin", etc.
         """
-        # Parse the data from the Neware VDF file
-        points = self.data_parser.parse_neware_vdf(file_path)
-        if points is None:
+
+        # Parse the data from the Arbin file
+        if data_type.lower() == "neware_vdf":
+            df = self.data_parser.parse_neware_vdf(file_path)
+            tags = tag_keys.NEWARE_NAME_KEYS
+        elif data_type.lower() == "arbin":
+            df = self.data_parser.parse_arbin(file_path)
+            tags = tag_keys.ARBIN_NAME_KEYS
+        elif data_type.lower() == "biologic":
+            df = self.data_parser.parse_biologic(file_path)
+            tags = tag_keys.BIOLOGIC_NAME_KEYS
+        elif data_type.lower() == "neware":
+            df = self.data_parser.parse_neware(file_path)
+            tags = tag_keys.NEWARE_NAME_KEYS
+        else:
+            raise ValueError(f"Data type {data_type} is not supported")
+
+        measurement_name = file_path.split("/")[-1].split(".")[0]   # Use the file name as the measurement name
+        if df is None:
             return
+        
         # Write the data into the database
         with InfluxDBClient(url=self.url, token=self.token, org=self.org) as client:
-            self.logger.info(f"Start writing Neware VDF file {file_path} into InfluxDB database")
+            self.logger.info(f"Start writing file {file_path} into InfluxDB database")
             write_api = client.write_api(write_options=SYNCHRONOUS)
+
             # Write the data into the database
-            for point in points:
-                self.logger.info(f"Writing point {point}")
-                write_api.write(bucket=self.bucket, record=point)
-            self.logger.info(f"Finish writing Neware VDF file {file_path} into InfluxDB database")
+            write_api.write(bucket=self.bucket, record=df, 
+                            data_frame_measurement_name=measurement_name,
+                            data_frame_tag_columns=tags,
+                            data_frame_timestamp_column="Timestamp(epoch)")
+            
+            self.logger.info(f"Finish writing file {file_path} into InfluxDB database")
 
     def query_data(self, measurement=None, tags=None, start_time="-100y", end_time="now()"):
         """
@@ -58,8 +83,8 @@ class DataManager:
 
         Returns
         -------
-        json_result : str
-            The json string of the query result
+        dfs: dict
+            The dictionary of dataframes, where the key is the measurement name and the value is the dataframe
         """
         measurement_filter = f'r["_measurement"] == "{measurement}"' if measurement else ''
         tag_filters = [f'r["{key}"] == "{value}"' for key, value in tags.items()] if tags else []
@@ -90,14 +115,21 @@ class DataManager:
 
         Returns
         -------
-        json_result : str
-            The json string of the query result
+        dfs: dict
+            The dictionary of dataframes, where the key is the measurement name and the value is the dataframe
         """
         with InfluxDBClient(url=self.url, token=self.token, org=self.org) as client:
             self.logger.info(f"Start querying data from InfluxDB database")
             query_api = client.query_api()
-            tables = query_api.query(query=query)
-            json_result = tables.to_json(indent=4)
+            result = query_api.query_data_frame(query=query)
             self.logger.info(f"Finish querying data from InfluxDB database")
-            return json_result
-
+            dfs = {}
+            if isinstance(result, list):
+                for df in result:
+                    if '_measurement' in df:
+                        measurement = df['_measurement'].iloc[0]
+                        dfs[measurement] = df.sort_values(by='_time')
+            elif '_measurement' in result:
+                measurement = result['_measurement'].iloc[0]
+                dfs[measurement] = result.sort_values(by='_time')
+            return dfs

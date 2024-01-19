@@ -7,7 +7,7 @@ services:
       - "8086:8086"
     volumes:
       # - /Volumes/me-battery-controls-lab/influx_data:/var/lib/influxdb2
-      - /Users/yiliu/Documents/GitHub/UMBCL_InfluxDB/data:/var/lib/influxdb2
+      - /home/me-bcl/Lab_Share_Volt/InfluxDB_Data:/var/lib/influxdb2
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=admin

@@ -27,3 +27,5 @@ data/
 *.s3db
 
 __pycache__/
+
+cellpy_data/
