@@ -1,0 +1,11 @@
+influxenv/
+
+*.env
+
+docker-compose.yml
+
+__pycache__/
+
+cellpy_data/
+
+*.log

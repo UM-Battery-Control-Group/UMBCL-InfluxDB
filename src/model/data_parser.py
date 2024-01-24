@@ -103,7 +103,7 @@ class DataParser:
             # Add the timestamp column
             total_time = pd.to_timedelta(df['Total Time'])
             df["Timestamp(epoch)"] = start_time + total_time
-            
+
             return df
         
         except Exception as e:
@@ -262,20 +262,24 @@ class DataParser:
         """
         name_keys = []
         if measurement_type.lower() == "arbin":
+            metadata = {"Cycler": "Arbin"}
             name_keys = name_config.ARBIN_NAME_KEYS
         elif measurement_type.lower() == "neware":
+            metadata = {"Cycler": "Neware"}
             name_keys = name_config.NEWARE_NAME_KEYS
         elif measurement_type.lower() == "neware_vdf":
+            metadata = {"Cycler": "VDF"}
             name_keys = name_config.NEWARE_VDF_NAME_KEYS
         elif measurement_type.lower() == "biologic":
+            metadata = {"Cycler": "Biologic"}
             name_keys = name_config.BIOLOGIC_NAME_KEYS
         else:
             self.logger.error(f"Unknown measurement type {measurement_type}")
             return None
         
         try:
-            # Split the measurement name by "_" 
-            metadata = dict(zip(name_keys, measurement_name.split("_")))
+            # Split the measurement name by "_" and zip it with the name keys 
+            metadata.update(dict(zip(name_keys, measurement_name.split("_"))))
 
             return metadata
         

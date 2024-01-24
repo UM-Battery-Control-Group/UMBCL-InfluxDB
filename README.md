@@ -9,8 +9,9 @@ This project seamlessly store the battery test record into the InfluxDataBase, o
 3. [Installing Dependencies](#installing-dependencies)
 4. [Docker](#docker)
 5. [Usage](#usage)
-6. [License](#license)
-7. [Questions](#questions)
+6. [Usage by Docker](#usage-by-docker)
+7. [License](#license)
+8. [Questions](#questions)
 
 ## Prerequisites
 
@@ -109,6 +110,32 @@ To make the query:
 ```
 
 To learn more about the write and query API, hover your cursor over the respective function to view a tooltip or pop-up with detailed instructions and information.
+
+## Usage by Docker
+
+Compose up the container:
+
+```bash
+sudo docker-compose up -d
+```
+
+Then get in the app container:
+
+```bash
+sudo docker-compose run --service-ports app
+```
+
+Inside the container, try upload like:
+
+```bash
+--write /data/PROJ_GMJULY2022/Cycler_Data_By_Cell/GMJuly2022_CELL002/GMJuly2022_CELL002_Test3_1_P0C_5P0PSI_20230505_R0_CH041.csv neware_vdf
+```
+
+Try query like:
+
+```bash
+--query GMJuly2022_CELL102_EIS_3d_P25C_5P0PSI_20230717_R0_CA8 Pressure=5P0PSI
+```
 
 ## License
 This project is licensed under the MIT License.

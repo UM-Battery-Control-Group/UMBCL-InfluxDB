@@ -32,19 +32,20 @@ class DataManager:
             The data type, i.e. "neware_vdf", "arbin", etc.
         """
 
+        tags = ["Cycler"]
         # Parse the data from the Arbin file
         if data_type.lower() == "neware_vdf":
             df = self.data_parser.parse_neware_vdf(file_path)
-            tags = tag_keys.NEWARE_NAME_KEYS
+            tags.extend(tag_keys.NEWARE_NAME_KEYS)
         elif data_type.lower() == "arbin":
             df = self.data_parser.parse_arbin(file_path)
-            tags = tag_keys.ARBIN_NAME_KEYS
+            tags.extend(tag_keys.ARBIN_NAME_KEYS)
         elif data_type.lower() == "biologic":
             df = self.data_parser.parse_biologic(file_path)
-            tags = tag_keys.BIOLOGIC_NAME_KEYS
+            tags.extend(tag_keys.BIOLOGIC_NAME_KEYS)
         elif data_type.lower() == "neware":
             df = self.data_parser.parse_neware(file_path)
-            tags = tag_keys.NEWARE_NAME_KEYS
+            tags.extend(tag_keys.NEWARE_NAME_KEYS)
         else:
             raise ValueError(f"Data type {data_type} is not supported")
 
