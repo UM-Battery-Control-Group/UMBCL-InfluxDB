@@ -17,6 +17,8 @@ services:
       - INFLUXDB_HTTP_AUTH_ENABLED=true
   app:
       build: .
+      stdin_open: true  
+      tty: true         
       container_name: umbcl-influxdb
       depends_on:
         - influxdb
