@@ -89,13 +89,13 @@ To access the InfluxDB dashboard, navigate to localhost:8086. Log in using the c
 
 ## Usage
 
-To upload the neware file:
+To upload the file:
 
 ```python
     from src.model improt DataManager
     data_manager = DataManager()
     file_path = "path/to/the/file"
-    data_manager.write_neware_vdf_data(file_path)
+    data_manager.write_data(file_path)
 ```
 
 To make the query:
@@ -130,6 +130,18 @@ Inside the container, try upload like:
 ```bash
 --write /data/PROJ_GMJULY2022/Cycler_Data_By_Cell/GMJuly2022_CELL002/GMJuly2022_CELL002_Test3_1_P0C_5P0PSI_20230505_R0_CH041.csv neware_vdf
 ```
+
+Recursive write 
+
+```bash
+--write /data/PROJ_GMJULY2022/Cycler_Data_By_Cell/GMJuly2022_CELL002/ -r
+```
+
+```bash
+--write /data/PROJ_GMJULY2022/Cycler_Data_By_Cell/GMJuly2022_CELL002/ --recursive
+```
+
+
 
 Try query like:
 

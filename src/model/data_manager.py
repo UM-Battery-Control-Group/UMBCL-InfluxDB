@@ -20,7 +20,7 @@ class DataManager:
         self.logger = setup_logger()
         self.data_parser = DataParser()
 
-    def write_data(self, file_path: str, data_type: str):
+    def write_data(self, file_path: str, data_type = ""):
         """
         Write the data from the Arbin file into the InfluxDB database
 
@@ -28,10 +28,22 @@ class DataManager:
         ----------
         file_path : str
             The path to the Arbin file
-        data_type : str
+        data_type : str (optional)
             The data type, i.e. "neware_vdf", "arbin", etc.
         """
-
+        if data_type == "":
+            # Determine the data type based on the file extension
+            file_extension = file_path.split(".")[-1]
+            if file_extension == "res":
+                data_type = "arbin"
+            elif file_extension == "csv":
+                data_type = "neware_vdf"
+            elif file_extension == "mpr":
+                data_type = "biologic"
+            elif file_extension == "xlsx":
+                data_type = "neware"
+            else:
+                raise ValueError(f"File extension {file_extension} is not supported")
         tags = ["Cycler"]
         # Parse the data from the Arbin file
         if data_type.lower() == "neware_vdf":
@@ -54,7 +66,7 @@ class DataManager:
             return
         
         # Write the data into the database
-        with InfluxDBClient(url=self.url, token=self.token, org=self.org) as client:
+        with InfluxDBClient(url=self.url, token=self.token, org=self.org, timeout=100000) as client:
             self.logger.info(f"Start writing file {file_path} into InfluxDB database")
             write_api = client.write_api(write_options=SYNCHRONOUS)
 

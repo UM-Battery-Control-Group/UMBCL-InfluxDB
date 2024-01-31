@@ -1,4 +1,4 @@
-import sys,os
+import sys,os,time
 sys.path.append(os.path.dirname(os.path.abspath("__file__")))
 if os.name=="nt":
     sys.path.append(os.path.dirname(os.path.abspath("__file__"))+"\\src")
@@ -17,8 +17,12 @@ from src.model import DataManager
 
 def create_parser():
     parser = argparse.ArgumentParser(description="Data processing tool")
-    parser.add_argument('--write', nargs=2, metavar=('FILE_PATH', 'DATA_TYPE'),
+    parser.add_argument('--write', nargs='+', metavar=('FILE_PATH', '[DATA_TYPE]'),
                         help='Write data to the database')
+    # recursive write using -r
+    parser.add_argument('-r', '--recursive', action='store_true',
+                        help='Recursively write data from a directory to the database')
+
     parser.add_argument('--query', nargs='*', metavar=('MEASUREMENT', 'TAGS'),
                         help='Query data from the database')
     return parser
@@ -35,11 +39,17 @@ def main():
             break
 
         try:
-            args = parser.parse_args(cmd_input.split())
-
+            args, _ = parser.parse_known_args(cmd_input.split())
             if args.write:
-                file_path, data_type = args.write
-                data_manager.write_data(file_path, data_type)
+                file_path = args.write[0]
+                data_type = args.write[1] if len(args.write) > 1 else None
+                if args.recursive:
+                    for root, dirs, files in os.walk(file_path):
+                        for file in files:
+                            data_manager.write_data(os.path.join(root, file)) 
+                            time.sleep(1)           
+                else:
+                    data_manager.write_data(file_path, data_type)
             elif args.query:
                 measurement, tags = None, None
                 if args.query and '=' in args.query[0]:
