@@ -10,14 +10,16 @@ This project seamlessly store the battery test record into the InfluxDataBase, o
 4. [Docker](#docker)
 5. [Usage](#usage)
 6. [Usage by Docker](#usage-by-docker)
-7. [License](#license)
-8. [Questions](#questions)
+7. [ROSA](#ROSA)
+8. [License](#license)
+9. [Questions](#questions)
 
 ## Prerequisites
 
-- Python 3.7 or higher
+- Python 3.9 or higher
 - pip (comes with Python)
 - Docker and Docker-compose (https://www.docker.com)
+- OpenShift CLI (https://docs.openshift.com/container-platform/4.11/cli_reference/openshift_cli/getting-started-cli.html)
 
 ## Setting up a Virtual Environment
 
@@ -147,6 +149,22 @@ Try query like:
 
 ```bash
 --query GMJuly2022_CELL102_EIS_3d_P25C_5P0PSI_20230717_R0_CA8 Pressure=5P0PSI
+```
+
+## ROSA
+
+Find your oc login API token ,then login like:
+
+```bash
+oc login --token=bvna2asdasfeR3sdfeSASfnUW6snA2rDm23asd --server=https://api.containersprod.art2.p1.openshiftapps.com:6443
+```
+
+Adjust the YAML files in the 'deployment/kubernetes' folder to match your computing environment.
+
+Apply all the yaml files like:
+
+```bash
+oc apply -f influxdb-pvc.yaml
 ```
 
 ## License
