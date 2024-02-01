@@ -10,14 +10,16 @@ This project seamlessly store the battery test record into the InfluxDataBase, o
 4. [Docker](#docker)
 5. [Usage](#usage)
 6. [Usage by Docker](#usage-by-docker)
-7. [License](#license)
-8. [Questions](#questions)
+7. [ROSA](#ROSA)
+8. [License](#license)
+9. [Questions](#questions)
 
 ## Prerequisites
 
-- Python 3.7 or higher
+- Python 3.9 or higher
 - pip (comes with Python)
 - Docker and Docker-compose (https://www.docker.com)
+- OpenShift CLI (https://docs.openshift.com/container-platform/4.11/cli_reference/openshift_cli/getting-started-cli.html)
 
 ## Setting up a Virtual Environment
 
@@ -89,13 +91,13 @@ To access the InfluxDB dashboard, navigate to localhost:8086. Log in using the c
 
 ## Usage
 
-To upload the neware file:
+To upload the file:
 
 ```python
     from src.model improt DataManager
     data_manager = DataManager()
     file_path = "path/to/the/file"
-    data_manager.write_neware_vdf_data(file_path)
+    data_manager.write_data(file_path)
 ```
 
 To make the query:
@@ -131,10 +133,38 @@ Inside the container, try upload like:
 --write /data/PROJ_GMJULY2022/Cycler_Data_By_Cell/GMJuly2022_CELL002/GMJuly2022_CELL002_Test3_1_P0C_5P0PSI_20230505_R0_CH041.csv neware_vdf
 ```
 
+Recursive write 
+
+```bash
+--write /data/PROJ_GMJULY2022/Cycler_Data_By_Cell/GMJuly2022_CELL002/ -r
+```
+
+```bash
+--write /data/PROJ_GMJULY2022/Cycler_Data_By_Cell/GMJuly2022_CELL002/ --recursive
+```
+
+
+
 Try query like:
 
 ```bash
 --query GMJuly2022_CELL102_EIS_3d_P25C_5P0PSI_20230717_R0_CA8 Pressure=5P0PSI
+```
+
+## ROSA
+
+Find your oc login API token ,then login like:
+
+```bash
+oc login --token=bvna2asdasfeR3sdfeSASfnUW6snA2rDm23asd --server=https://api.containersprod.art2.p1.openshiftapps.com:6443
+```
+
+Adjust the YAML files in the 'deployment/kubernetes' folder to match your computing environment.
+
+Apply all the yaml files like:
+
+```bash
+oc apply -f influxdb-pvc.yaml
 ```
 
 ## License

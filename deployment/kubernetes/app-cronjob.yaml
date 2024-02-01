@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: umbcl-data-import-cronjob
+spec:
+  schedule: "0 0 * * *" # will run every day at 00:00
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: umbcl-influx-app
+            image: krazyi/umbcl-influx:v1.0
+            command: ["python", "/app/app.py"]
+            # Note: the following env variables are required for the app to run
+            # TODO: change the values of these env variables to your own
+            env:
+              - name: FILE_PATH
+                value: "/data/your_data_folder"
+              - name: DATA_TYPE
+                value: "your_data_type"
+            volumeMounts:
+            - name: data-volume
+              mountPath: /data/your_data_folder
+          volumes:
+          - name: data-volume
+            hostPath:
+            # TODO: change this path to your own
+              path: /host/path/to/your_data_folder
+              type: Directory
+          restartPolicy: OnFailure
