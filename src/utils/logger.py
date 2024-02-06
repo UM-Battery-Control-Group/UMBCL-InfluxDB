@@ -13,33 +13,48 @@ class SingletonLogger:
     """
     _logger = None
     @classmethod
-    def _ensure_log_file_directory_exists(cls):
-        """
-        Ensure the directory for the log file exists.
-        If not, create it.
-        """
-        log_dir = os.path.dirname(logger_config.LOG_FILE_PATH)
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-    @classmethod
     def get_instance(cls):
         if not cls._logger:
             cls._logger = logging.getLogger(__name__)
             cls._logger.setLevel(logger_config.LOG_LEVEL)
 
-            # create console handler
-            handler = logging.StreamHandler()
+            # create console handler and set level to debug
+            console_handler = logging.StreamHandler()
             formatter = logging.Formatter(logger_config.LOG_FORMAT)
-            handler.setFormatter(formatter)
-            cls._logger.addHandler(handler)
+            console_handler.setFormatter(formatter)
+            cls._logger.addHandler(console_handler)
 
-            # create file handler
-            cls._ensure_log_file_directory_exists()
-            file_handler = logging.FileHandler(logger_config.LOG_FILE_PATH)
-            file_handler.setFormatter(formatter)
-            cls._logger.addHandler(file_handler)
+            # No need to check or create log directory for file handler
+            # as we are not using file handler in this setup
 
         return cls._logger
+    # def _ensure_log_file_directory_exists(cls):
+    #     """
+    #     Ensure the directory for the log file exists.
+    #     If not, create it.
+    #     """
+    #     log_dir = os.path.dirname(logger_config.LOG_FILE_PATH)
+    #     if not os.path.exists(log_dir):
+    #         os.makedirs(log_dir)
+    # @classmethod
+    # def get_instance(cls):
+    #     if not cls._logger:
+    #         cls._logger = logging.getLogger(__name__)
+    #         cls._logger.setLevel(logger_config.LOG_LEVEL)
+
+    #         # create console handler
+    #         handler = logging.StreamHandler()
+    #         formatter = logging.Formatter(logger_config.LOG_FORMAT)
+    #         handler.setFormatter(formatter)
+    #         cls._logger.addHandler(handler)
+
+    #         # create file handler
+    #         cls._ensure_log_file_directory_exists()
+    #         file_handler = logging.FileHandler(logger_config.LOG_FILE_PATH)
+    #         file_handler.setFormatter(formatter)
+    #         cls._logger.addHandler(file_handler)
+
+    #     return cls._logger
 
 def setup_logger():
     return SingletonLogger.get_instance()
