@@ -224,13 +224,13 @@ class DataParser:
         """
         rename_dict = {}
         if measurement_type.lower() == "arbin":
-            rename_dict = {arbin: stored for stored, arbin in zip(field_config.STORED_FIELD_NAMES, field_config.ARBIN_FIELD_NAMES) if arbin is not ""}
+            rename_dict = {arbin: stored for stored, arbin in zip(field_config.STORED_FIELD_NAMES, field_config.ARBIN_FIELD_NAMES) if arbin != ""}
         elif measurement_type.lower() == "neware":
-            rename_dict = {neware: stored for stored, neware in zip(field_config.STORED_FIELD_NAMES, field_config.NEWARE_FIELD_NAMES) if neware is not ""}
+            rename_dict = {neware: stored for stored, neware in zip(field_config.STORED_FIELD_NAMES, field_config.NEWARE_FIELD_NAMES) if neware != ""}
         elif measurement_type.lower() == "neware_vdf":
-            rename_dict = {vdf: stored for stored, vdf in zip(field_config.STORED_FIELD_NAMES, field_config.NEWARE_VDF_FIELD_NAMES) if vdf is not ""}
+            rename_dict = {vdf: stored for stored, vdf in zip(field_config.STORED_FIELD_NAMES, field_config.NEWARE_VDF_FIELD_NAMES) if vdf != ""}
         elif measurement_type.lower() == "biologic":
-            rename_dict = {bio: stored for stored, bio in zip(field_config.STORED_FIELD_NAMES, field_config.BIOLOGIC_FIELD_NAMES) if bio is not ""}
+            rename_dict = {bio: stored for stored, bio in zip(field_config.STORED_FIELD_NAMES, field_config.BIOLOGIC_FIELD_NAMES) if bio != ""}
         else:
             self.logger.error(f"Unknown measurement type {measurement_type}")
             return None
