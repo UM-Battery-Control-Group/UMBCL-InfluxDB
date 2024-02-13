@@ -2,21 +2,20 @@ import os
 import pandas as pd
 import datetime
 from src.utils import setup_logger
-from dotenv import load_dotenv
 from influxdb_client import InfluxDBClient, WriteApi
 from influxdb_client.client.write_api import SYNCHRONOUS
 from src.model import DataParser
 from src.config import name_config as tag_keys
+from config import DevelopmentConfig
 
-load_dotenv('influx.env')
 
 class DataManager:
 
     def __init__(self) -> None:
-        self.url = os.getenv('INFLUXDB_URL', 'http://localhost:8086')
-        self.token = os.getenv('INFLUXDB_TOKEN')
-        self.org = os.getenv('INFLUXDB_ORG')
-        self.bucket = os.getenv('INFLUXDB_BUCKET')
+        self.url = DevelopmentConfig.url
+        self.token = DevelopmentConfig.token
+        self.org = DevelopmentConfig.org
+        self.bucket = DevelopmentConfig.bucket
         self.logger = setup_logger()
         self.data_parser = DataParser()
 

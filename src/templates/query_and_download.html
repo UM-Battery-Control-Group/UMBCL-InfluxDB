@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Query and Download Data</title>
+</head>
+<body>
+
+<h2>Query and Download Data from InfluxDB</h2>
+
+<form id="queryForm">
+    <label for="measurement">Measurement:</label>
+    <input type="text" id="measurement" name="measurement"><br>
+    
+    <label for="tags">Tags:</label>
+    <input type="text" id="tags" name="tags" placeholder="tag1=value1,tag2=value2"><br>
+    
+    <label for="start_time">Start Time:</label>
+    <input type="text" id="start_time" name="start_time" placeholder="-100y"><br>
+    
+    <label for="end_time">End Time:</label>
+    <input type="text" id="end_time" name="end_time" placeholder="now()"><br>
+    
+    <button type="button" onclick="queryAndDownload()">Query and Download</button>
+</form>
+
+<script>
+function queryAndDownload() {
+    const measurement = document.getElementById('measurement').value;
+    const tags = document.getElementById('tags').value;
+    const startTime = document.getElementById('start_time').value || '-100y';
+    const endTime = document.getElementById('end_time').value || 'now()';
+    
+    const queryParams = new URLSearchParams({
+        measurement,
+        tags,
+        start_time: startTime,
+        end_time: endTime
+    }).toString();
+    
+    const queryUrl = `/api/query_and_download?${queryParams}`;
+    
+    // Redirect to the query URL to initiate the download
+    window.location.href = queryUrl;
+}
+</script>
+
+</body>
+</html>
