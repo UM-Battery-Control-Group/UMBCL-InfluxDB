@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app, send_file
+from flask import Blueprint, request, jsonify, current_app, send_file, render_template
 from werkzeug.utils import secure_filename
 from src.model.data_manager import DataManager
 import os
@@ -7,6 +7,14 @@ import zipfile
 
 raw_blueprint = Blueprint('raw', __name__)
 data_manager = DataManager()
+
+@raw_blueprint.route('/')
+def index():
+    return render_template('raw/index.html')
+
+@raw_blueprint.route('/upload')
+def upload_form():
+    return render_template('raw/upload.html')
 
 @raw_blueprint.route('/upload', methods=['POST'])
 def upload():
@@ -29,7 +37,9 @@ def upload():
             os.remove(filepath)  # Make sure to delete the file if an error occurs
             return jsonify({"error": str(e)}), 500
 
-    
+@raw_blueprint.route('/query_and_download')
+def query_and_download_form():
+    return render_template('raw/query_and_download.html')
 
 @raw_blueprint.route('/query_and_download', methods=['GET'])
 def query_and_download():

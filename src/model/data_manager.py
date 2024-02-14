@@ -6,7 +6,7 @@ from influxdb_client import InfluxDBClient, WriteApi
 from influxdb_client.client.write_api import SYNCHRONOUS
 from src.model import DataParser
 from src.config import name_config as tag_keys
-from config import DevelopmentConfig
+from src.config import DevelopmentConfig
 
 
 class DataManager:
