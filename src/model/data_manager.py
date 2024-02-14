@@ -65,7 +65,7 @@ class DataManager:
             return
         
         # Write the data into the database
-        with InfluxDBClient(url=self.url, token=self.token, org=self.org, timeout=100000) as client:
+        with InfluxDBClient(url=self.url, token=self.token, org=self.org, timeout=1000000) as client:
             self.logger.info(f"Start writing file {file_path} into InfluxDB database")
             write_api = client.write_api(write_options=SYNCHRONOUS)
 

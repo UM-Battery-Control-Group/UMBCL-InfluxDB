@@ -25,7 +25,10 @@ def upload():
         return jsonify({"error": "No selected file"}), 400
     if file:
         filename = secure_filename(file.filename)
-        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        upload_folder = current_app.config['UPLOAD_FOLDER']
+        filepath = os.path.join(upload_folder, filename)
+        if not os.path.exists(upload_folder):
+            os.makedirs(upload_folder)
         file.save(filepath)  
         
         # Process the file and write the data to InfluxDB
