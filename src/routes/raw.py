@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app, send_file, render_template
+from flask import Blueprint, request, jsonify, current_app, send_file, render_template, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 from src.model.data_manager import DataManager
 import os
@@ -19,10 +19,12 @@ def upload_form():
 @raw_blueprint.route('/upload', methods=['POST'])
 def upload():
     if 'file' not in request.files:
-        return jsonify({"error": "No file part"}), 400
+        flash('No file part', 'danger')
+        return redirect(url_for('raw.upload_form'))
     file = request.files['file']
     if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
+        flash('No selected file', 'danger')
+        return redirect(url_for('raw.upload_form'))
     if file:
         filename = secure_filename(file.filename)
         upload_folder = current_app.config['UPLOAD_FOLDER']
@@ -35,10 +37,12 @@ def upload():
         try:
             data_manager.write_data(filepath)  
             os.remove(filepath)  # Delete the file after processing
-            return jsonify({"message": "File processed and deleted successfully"}), 200
+            flash('File processed and deleted successfully', 'success')
+            return redirect(url_for('raw.upload_form'))
         except Exception as e:
             os.remove(filepath)  # Make sure to delete the file if an error occurs
-            return jsonify({"error": str(e)}), 500
+            flash(f'Error processing file: {e}', 'danger')
+            return redirect(url_for('raw.upload_form'))
 
 @raw_blueprint.route('/query_and_download')
 def query_and_download_form():

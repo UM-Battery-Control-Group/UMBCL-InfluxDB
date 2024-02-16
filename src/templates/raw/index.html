@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Raw Data Page</title>
-</head>
-<body>
-    <h1>Upload or Download raw test data</h1>
-    <p><a href="/raw/upload">Upload File</a></p>
-    <p><a href="/raw/query_and_download">Query and Download Data</a></p>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-5">Upload or Download Raw Test Data</h1>
+    <div class="list-group mt-3">
+        <a href="/raw/upload" class="list-group-item list-group-item-action">Upload File</a>
+        <a href="/raw/query_and_download" class="list-group-item list-group-item-action">Query and Download Data</a>
+    </div>
+</div>
+{% endblock %}

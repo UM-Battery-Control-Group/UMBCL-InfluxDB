@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}UMBCL{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+        .container-wrap {
+            flex: 1 0 auto;
+        }
+        .footer {
+            flex-shrink: 0;
+            background-color: #00274C; /* University of Michigan Blue */
+            color: #FFCB05; /* University of Michigan Yellow */
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            background-color: #FFCB05; /* University of Michigan Yellow */
+            color: #00274C; /* University of Michigan Blue */
+        }
+        a, a:hover {
+            color: #00274C;
+        }
+        .navbar {
+            background-color: #00274C;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column h-100">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">UMBCL Data</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    {% block navbar %}
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/raw">Raw Data</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Processed Data</a>
+                    </li>
+                    {% endblock %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-wrap flex-shrink-0">
+        <div class="container mt-4">
+            {% block content %}
+            <!-- Placeholder for page-specific content -->
+            {% endblock %}
+        </div>
+    </div>
+
+    <footer class="footer mt-auto py-3 text-center">
+        <div class="container">
+            {% block footer %}
+            <span class="text-muted">Place sticky footer content here.</span>
+            {% endblock %}
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

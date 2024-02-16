@@ -1,39 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Query and Download Data</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h2>Query and Download Data from InfluxDB</h2>
+{% block content %}
+<div class="container">
+    <h2>Query and Download Data from InfluxDB</h2>
 
-<form id="queryForm">
-    <label for="measurement">Measurement:</label>
-    <input type="text" id="measurement" name="measurement"><br>
-    
-    <label for="tags">Tags:</label>
-    <input type="text" id="tags" name="tags" placeholder="tag1=value1,tag2=value2"><br>
-    
-    <label for="start_time">Start Time:</label>
-    <input type="text" id="start_time" name="start_time" placeholder="-100y"><br>
-    
-    <label for="end_time">End Time:</label>
-    <input type="text" id="end_time" name="end_time" placeholder="now()"><br>
-    
-    <button type="button" onclick="queryAndDownload()">Query and Download</button>
-</form>
+    <form id="queryForm">
+        <label for="measurement">Measurement:</label>
+        <input type="text" id="measurement" name="measurement"><br>
+        
+        <div id="tagsContainer">
+            <label>Tags:</label><br>
+        </div>
+        
+        <button type="button" onclick="addTag()">Add Tag</button><br>
+        
+        <label for="start_time">Start Time:</label>
+        <input type="text" id="start_time" name="start_time" placeholder="-100y"><br>
+        
+        <label for="end_time">End Time:</label>
+        <input type="text" id="end_time" name="end_time" placeholder="now()"><br>
+        
+        <button type="button" onclick="queryAndDownload()">Query and Download</button>
+    </form>
+</div>
 
 <script>
+function addTag() {
+    const container = document.getElementById('tagsContainer');
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'tags';
+    input.placeholder = 'tagKey=tagValue';
+    container.appendChild(input);
+    container.appendChild(document.createElement('br'));
+}
+
 function queryAndDownload() {
     const measurement = document.getElementById('measurement').value;
-    const tags = document.getElementById('tags').value;
+    let tags = [];
+    document.querySelectorAll('#tagsContainer input').forEach(input => {
+        tags.push(input.value);
+    });
     const startTime = document.getElementById('start_time').value || '-100y';
     const endTime = document.getElementById('end_time').value || 'now()';
     
     const queryParams = new URLSearchParams({
         measurement,
-        tags,
+        tags: tags.join(','),
         start_time: startTime,
         end_time: endTime
     }).toString();
@@ -43,7 +56,9 @@ function queryAndDownload() {
     // Redirect to the query URL to initiate the download
     window.location.href = queryUrl;
 }
+
+// Initially add one tag input
+addTag();
 </script>
 
-</body>
-</html>
+{% endblock %}
